@@ -1,9 +1,11 @@
 package com.socialmediaraiser.twittersocialgraph;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.socialmediaraiser.core.twitter.TwitterHelper;
-import com.socialmediaraiser.core.twitter.helpers.dto.getuser.AbstractUser;
+import com.socialmediaraiser.twitter.IUser;
+import com.socialmediaraiser.twitter.TwitterClient;
 import com.socialmediaraiser.twittersocialgraph.impl.*;
 import lombok.Data;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,15 +13,12 @@ import java.util.*;
 import java.util.logging.Logger;
 
 @Data
-public class FollowerAnalyzer extends TwitterHelper {
+public class FollowerAnalyzer {
 
     private static final Logger LOGGER = Logger.getLogger(FollowerAnalyzer.class.getName());
     private double minRatioSimpleMatching = 0.2 ; // if one of the two user has this % of common, draw a 1 minimum link
     private double minRatioDoubleMatching = 0.1 ; // if the product of the two ratio > this, draw a wider link
-
-    public FollowerAnalyzer() {
-        super("twitter-credentials");
-    }
+    private TwitterClient twitterClient = new TwitterClient();
 
     public int countCommonUsers(Set<String> users1, Set<String> users2){
         Set<String> common = new HashSet<>(users1);
@@ -43,7 +42,7 @@ public class FollowerAnalyzer extends TwitterHelper {
             }
             for(UserGraph user2 : users) {
                 if (user1!=user2 && !studiedLinks.contains(new Link(user1.getId(), user2.getId(),0))){
-                    AbstractUser user = this.getUserFromUserName(user2.getId());
+                    IUser user = this.twitterClient.getUserFromUserName(user2.getId());
                     if(user!=null){
                         Set<String> followers2 = loadFollowers(user2.getId());
                         if(followers2==null) continue;
@@ -141,12 +140,12 @@ public class FollowerAnalyzer extends TwitterHelper {
                 LOGGER.severe(userName + " KO!!");
             }
         }
-        AbstractUser user = this.getUserFromUserName(userName);
+        IUser user = this.twitterClient.getUserFromUserName(userName);
         if(user==null){
             LOGGER.severe(userName + "not found");
             return null;
         }
-        Set<String> followers = this.getUserFollowersIds(user.getId());
+        Set<String> followers = this.twitterClient.getUserFollowersIds(user.getId());
         File resourcesDirectory = new File("src/main/resources/users/"+fileName);
         mapper.writeValue(resourcesDirectory, followers);
         return followers;
@@ -243,11 +242,11 @@ public class FollowerAnalyzer extends TwitterHelper {
         int[][] result = new int[users.size()][others.size()];
         for(int i=0; i<users.size(); i++){
             String user1 = users.get(i);
-            Set<String> followers1 = this.getUserFollowersIds(this.getUserFromUserName(user1).getId());
+            Set<String> followers1 = this.twitterClient.getUserFollowersIds(this.twitterClient.getUserFromUserName(user1).getId());
             for(int j=0;j<others.size(); j++) {
                 String user2 = others.get(j);
                 if (!user1.equals(user2)){
-                    Set<String> followers2 = this.getUserFollowersIds(this.getUserFromUserName(user2).getId());
+                    Set<String> followers2 = this.twitterClient.getUserFollowersIds(this.twitterClient.getUserFromUserName(user2).getId());
                     int commonFollowers = this.countCommonUsers(followers1, followers2);
                     int value = 100*followers1.size()/commonFollowers;
                     LOGGER.info("*** links added between " + user1 + " ("+followers1.size()+") & " + user2
@@ -268,9 +267,9 @@ public class FollowerAnalyzer extends TwitterHelper {
         map.put(GroupEnum.PR, new MatchingNumber(0,0));
         map.put(GroupEnum.LR, new MatchingNumber(0,0));
         map.put(GroupEnum.EX_DROITE, new MatchingNumber(0,0));
-        Set<String> userFollowersIds = this.getUserFollowersIds(this.getUserFromUserName(user).getId());
+        Set<String> userFollowersIds = this.twitterClient.getUserFollowersIds(this.twitterClient.getUserFromUserName(user).getId());
         for(UserGraph userGraph : users){
-            Set<String> followers = this.getUserFollowersIds(this.getUserFromUserName(userGraph.getId()).getId());
+            Set<String> followers = this.twitterClient.getUserFollowersIds(this.twitterClient.getUserFromUserName(userGraph.getId()).getId());
             double value = 1; //this.computeValue(userFollowersIds, followers);
             map.get(userGraph.getGroupEnum()).incrementMatchingSum(value);
             map.get(userGraph.getGroupEnum()).incrementNbElements();
