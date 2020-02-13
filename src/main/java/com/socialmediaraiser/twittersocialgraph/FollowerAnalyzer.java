@@ -1,8 +1,8 @@
 package com.socialmediaraiser.twittersocialgraph;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.socialmediaraiser.twitter.IUser;
 import com.socialmediaraiser.twitter.TwitterClient;
+import com.socialmediaraiser.twitter.dto.user.IUser;
 import com.socialmediaraiser.twittersocialgraph.impl.*;
 import lombok.Data;
 
@@ -137,7 +137,7 @@ public class FollowerAnalyzer {
             try {
                 return mapper.readValue(file, HashSet.class);
             } catch (Exception e) {
-                LOGGER.severe(userName + " KO!!");
+                LOGGER.severe(userName + " KO!! " + e.getMessage());
             }
         }
         IUser user = this.twitterClient.getUserFromUserName(userName);

@@ -1,8 +1,11 @@
 package com.socialmediaraiser.twittersocialgraph;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.socialmediaraiser.twittersocialgraph.impl.GroupEnum;
+import com.socialmediaraiser.twittersocialgraph.impl.JsonGraph;
 import com.socialmediaraiser.twittersocialgraph.impl.UserGraph;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -17,7 +20,7 @@ public class TwitterSocialGraphLauncher {
         FollowerAnalyzer bot = new FollowerAnalyzer();
         HashSet<UserGraph> users = new HashSet<>();
         // List<UserGraph> users = new ArrayList<>();
-     /*   users.add(new UserGraph("MarleneSchiappa", GroupEnum.LREM));
+        users.add(new UserGraph("MarleneSchiappa", GroupEnum.LREM));
         users.add(new UserGraph("GabrielAttal", GroupEnum.LREM));
         users.add(new UserGraph("RichardFerrand", GroupEnum.LREM));
         users.add(new UserGraph("EPhilippePM", GroupEnum.LREM));
@@ -58,6 +61,7 @@ public class TwitterSocialGraphLauncher {
         users.add(new UserGraph("LaurentBouvet", GroupEnum.PR));
         users.add(new UserGraph("Amk84000", GroupEnum.PR));
         users.add(new UserGraph("GillesClavreul", GroupEnum.PR));
+        users.add(new UserGraph("valeriemaupas", GroupEnum.PR));
         users.add(new UserGraph("nadine__morano", GroupEnum.LR));
         users.add(new UserGraph("LydiaGuirous", GroupEnum.LR));
         users.add(new UserGraph("ECiotti", GroupEnum.LR));
@@ -74,6 +78,7 @@ public class TwitterSocialGraphLauncher {
         users.add(new UserGraph("jeannettebougra", GroupEnum.LR));
         users.add(new UserGraph("ClaudeGoasguen", GroupEnum.LR));
         users.add(new UserGraph("sonjoachim", GroupEnum.LR));
+        users.add(new UserGraph("jclagarde", GroupEnum.LR));
         users.add(new UserGraph("MLP_officiel", GroupEnum.EX_DROITE));
         users.add(new UserGraph("MarionMarechal", GroupEnum.EX_DROITE));
         users.add(new UserGraph("J_Bardella", GroupEnum.EX_DROITE));
@@ -91,7 +96,7 @@ public class TwitterSocialGraphLauncher {
         users.add(new UserGraph("FeizaBM", GroupEnum.JOURNALISTES_GAUCHE));
         users.add(new UserGraph("s_assbague", GroupEnum.JOURNALISTES_GAUCHE));
         users.add(new UserGraph("RemyBuisine", GroupEnum.JOURNALISTES_GAUCHE));
-        users.add(new UserGraph("fabricearfi", GroupEnum.JOURNALISTES_GAUCHE)); */
+        users.add(new UserGraph("fabricearfi", GroupEnum.JOURNALISTES_GAUCHE));
         users.add(new UserGraph("davidperrotin", GroupEnum.JOURNALISTES_GAUCHE));
         users.add(new UserGraph("carolinedehaas", GroupEnum.JOURNALISTES_GAUCHE));
         users.add(new UserGraph("RokhayaDiallo", GroupEnum.JOURNALISTES_GAUCHE));
@@ -143,15 +148,15 @@ public class TwitterSocialGraphLauncher {
             ObjectMapper mapper = new ObjectMapper();
             mapper.writeValue(new File("public/users/"+user.getId()+".json"), result);
         } */
-
-       /* HashSet<UserGraph> others = new HashSet<>();
-        UserGraph user = new UserGraph("GuiraudInd", GroupEnum.JOURNALISTES_DROITE);
+/*$
+        HashSet<UserGraph> others = new HashSet<>();
+        UserGraph user = new UserGraph("jclagarde", GroupEnum.LR);
         others.add(user);
         JsonGraph result = bot.getJsonGraph(others, users);
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(new File("public/users/"+user.getId()+".json"), result);
 
-        bot.getJsonGraph(others, users);*/
+        bot.getJsonGraph(others, users); */
 
        bot.getJsonGraph(users);
         //   bot.getCsvArray(users);
